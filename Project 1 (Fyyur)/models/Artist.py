@@ -39,7 +39,6 @@ def getArtists():
 
 def getArtist(id):
     artist = Artist.query.get(id)
-    shows = artist.shows
     current_time = datetime.datetime.now()
 
     shows_upcoming = Show.Show.query.join(Artist).filter(Artist.id == id).filter(Show.Show.start_time  > current_time)

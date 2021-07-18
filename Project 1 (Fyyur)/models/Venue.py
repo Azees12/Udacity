@@ -28,7 +28,6 @@ class Venue(db.Model):
 def addVenue(name, city, state, address, phone, image_link, genres, facebook_link, seeking_description, website, seeking_talent):
     status = False
     try:
-        print('here3')
         venue = Venue(
             name=name,
             city=city,
@@ -112,8 +111,6 @@ def getVenues():
 
 def getVenue(venue_id):
     venue = Venue.query.get(venue_id)
-    shows = venue.shows
-
     past_shows = []  # dictionary of all artists shows
 
     upcoming_shows = []  # dictionary of all artists shows that have not yet passed occured
