@@ -2,10 +2,6 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from models import Genre
-from models import Artist
-from models import Venue
-from models import Show
 import dateutil.parser
 import babel
 from flask import Flask, render_template, request, flash, redirect, url_for
@@ -29,6 +25,7 @@ db = SQLAlchemy(app)
 # Migrate Added
 
 
+
 def format_datetime(value, format='medium'):
     date = dateutil.parser.parse(value)
     if format == 'full':
@@ -36,6 +33,10 @@ def format_datetime(value, format='medium'):
     elif format == 'medium':
         format = "EE MM, dd, y h:mma"
     return babel.dates.format_datetime(date, format, locale='en')
+
+from models import Venue
+from models import Artist
+from models import Show
 
 
 app.jinja_env.filters['datetime'] = format_datetime

@@ -1,7 +1,7 @@
 import datetime
 from operator import itemgetter
-from models import Genre
-from app import db, Show, format_datetime
+from models import Show, Genre
+from app import db, format_datetime
 
 
 class Venue(db.Model):
@@ -118,7 +118,7 @@ def getVenue(venue_id):
 
     upcoming_shows = []  # dictionary of all artists shows that have not yet passed occured
 
-    current_time = datetime.date.today()
+    current_time = datetime.datetime.now()
 
     # Sorting artists shows based on todays date
     for show in shows:

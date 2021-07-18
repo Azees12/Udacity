@@ -1,8 +1,7 @@
 from datetime import datetime
-from typing import Optional
 from flask_wtf import Form
 from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
-from wtforms.validators import DataRequired, AnyOf, URL
+from wtforms.validators import DataRequired, AnyOf, URL,Optional
 
 class ShowForm(Form):
     artist_id = StringField(
@@ -233,10 +232,10 @@ class ArtistForm(Form):
      )
 
     seeking_venue = BooleanField( 
-        'seeking_venue', validators=(DataRequired())
+        'seeking_venue', validators=[DataRequired()]
         )
 
     seeking_description = StringField(
-            'seeking_description'
+            'seeking_description', validators=[Optional()]
      )
 

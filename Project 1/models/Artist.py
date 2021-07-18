@@ -1,6 +1,6 @@
 import datetime
-from models import Genre
 from sqlalchemy.orm import backref
+from models import Genre
 from app import db, format_datetime
 
 
@@ -42,7 +42,7 @@ def getArtist(id):
     shows = artist.shows
     past_shows = []
     upcoming_shows = []
-    current_time = datetime.date.today()
+    current_time = datetime.datetime.now()
 
     for show in shows:
         data = {
