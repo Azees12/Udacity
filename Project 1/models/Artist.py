@@ -1,6 +1,6 @@
 import datetime
 from sqlalchemy.orm import backref
-from models import Genre
+from models import Genre,Show
 from app import db, format_datetime
 
 
@@ -40,21 +40,32 @@ def getArtists():
 def getArtist(id):
     artist = Artist.query.get(id)
     shows = artist.shows
-    past_shows = []
-    upcoming_shows = []
     current_time = datetime.datetime.now()
 
-    for show in shows:
+    shows_upcoming = Show.Show.query.join(Artist).filter(Artist.id == id).filter(Show.Show.start_time  > current_time)
+    shows_past = Show.Show.query.join(Artist).filter(Artist.id == id).filter(Show.Show.start_time  < current_time )
+       
+    upcoming_shows = []
+    past_shows  = []
+
+    for shows in shows_upcoming:
         data = {
-            "venue_id": show.venue_id,
-            "venue_name": show.venue.name,
-            "venue_image_link": show.venue.image_link,
-            "start_time": format_datetime(str(show.start_time))
+            "venue_id": shows.venue_id,
+            "venue_name": shows.venue.name,
+            "venue_image_link": shows.venue.image_link,
+            "start_time": format_datetime(str(shows.start_time))
         }
-        if (show.start_time) > current_time:
-            upcoming_shows.append(data)
-        else:
-            past_shows.append(data)
+        upcoming_shows.append(data)
+
+    for shows in shows_past:
+        data = {
+            "venue_id": shows.venue_id,
+            "venue_name": shows.venue.name,
+            "venue_image_link": shows.venue.image_link,
+            "start_time": format_datetime(str(shows.start_time))
+        }
+        past_shows.append(data)
+
 
     genres = [genre.name for genre in artist.genres]
 
@@ -72,8 +83,6 @@ def getArtist(id):
         "past_shows_count": len(past_shows),
         "upcoming_shows_count": len(upcoming_shows)
     }
-
-    print(artist.genres)
     return data
 
 

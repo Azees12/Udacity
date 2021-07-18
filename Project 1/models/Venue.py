@@ -121,19 +121,35 @@ def getVenue(venue_id):
     current_time = datetime.datetime.now()
 
     # Sorting artists shows based on todays date
-    for show in shows:
+
+    shows_upcoming = Show.Show.query.join(Venue).filter(Venue.id == venue_id).filter(Show.Show.start_time  > current_time)
+    shows_past = Show.Show.query.join(Venue).filter(Venue.id == venue_id).filter(Show.Show.start_time  < current_time )
+       
+    upcoming_shows = []
+    past_shows  = []
+
+
+    for show in shows_upcoming:
         data = {
             "artist_id": show.artist_id,
             "artist_name": show.artist.name,
             "artist_image_link": show.artist.image_link,
             "start_time": format_datetime(str(show.start_time))
         }
-        if show.start_time > current_time:
-            upcoming_shows.append(data)
-        else:
-            past_shows.append(data)
+        upcoming_shows.append(data)
 
+    for show in shows_past:
+        data = {
+            "artist_id": show.artist_id,
+            "artist_name": show.artist.name,
+            "artist_image_link": show.artist.image_link,
+            "start_time": format_datetime(str(show.start_time))
+        }
+        past_shows.append(data)
+    
+      
     genres = [genre.name for genre in venue.genres]  # Extracting genre names
+    print (past_shows)
 
     data = {
         "id": venue.id,
