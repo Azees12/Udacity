@@ -79,7 +79,7 @@ def getVenues():
     cities_states = list(cities_states)
     cities_states.sort(key=itemgetter(1, 0))   # Order by By state then city
 
-    now = datetime.date.today()    # Date to be compared
+    now = datetime.datetime.now()    # Date to be compared
 
     # Adding the venues to the approaiate city state
     for loc in cities_states:
