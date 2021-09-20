@@ -9,10 +9,12 @@ class QuestionView extends Component {
   constructor(){
     super();
     this.state = {
+      view: 'list',
+      searchTerm: null,
       questions: [],
       page: 1,
       totalQuestions: 0,
-      categories: {},
+      categories: [],
       currentCategory: null,
     }
   }
@@ -59,10 +61,13 @@ class QuestionView extends Component {
   }
 
   getByCategory= (id) => {
+    const { page, currentCategory } = this.state;
+
     $.ajax({
-      url: `/categories/${id}/questions`, //TODO: update request URL
+      url: `/categories/${currentCategory}/questions?page=${page}`, //TODO: update request URL
       type: "GET",
       success: (result) => {
+        
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
@@ -75,30 +80,54 @@ class QuestionView extends Component {
       }
     })
   }
+  handleCategoryClick = categoryId => {
+    this.setState(
+      {
+        view: 'in_category',
+        page: 1,
+        currentCategory: categoryId,
+      },
+      () => this.getByCategory()
+    );
+  };
 
-  submitSearch = (searchTerm) => {
+  search = () => {
+    const { page, searchTerm } = this.state;
+
     $.ajax({
-      url: `/questions`, //TODO: update request URL
-      type: "POST",
+      url: `/questions?page=${page}`,
+      type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
-      data: JSON.stringify({searchTerm: searchTerm}),
+      data: JSON.stringify({ search_term: searchTerm }),
       xhrFields: {
-        withCredentials: true
+        withCredentials: true,
       },
       crossDomain: true,
-      success: (result) => {
+      success: result => {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          currentCategory: result.current_category })
+          currentCategory: result.current_category,
+        });
         return;
       },
-      error: (error) => {
-        alert('Unable to load questions. Please try your request again')
+      error: error => {
+        alert('Unable to load questions. Please try your request again');
         return;
-      }
-    })
+      },
+    });
+  };
+
+  submitSearch = (searchTerm) => {
+    this.setState(
+      {
+        view: 'search',
+        page: 1,
+        searchTerm: searchTerm,
+      },
+      () => this.search()
+    );
   }
 
   questionAction = (id) => (action) => {
@@ -125,12 +154,12 @@ class QuestionView extends Component {
         <div className="categories-list">
           <h2 onClick={() => {this.getQuestions()}}>Categories</h2>
           <ul>
-            {Object.keys(this.state.categories).map((id, ) => (
-              <li key={id} onClick={() => {this.getByCategory(id)}}>
-                {this.state.categories[id]}
-                <img className="category" src={`${this.state.categories[id].toLowerCase()}.svg`}/>
+            {this.state.categories.map(cat => 
+              <li key={cat.id} onClick={() => {this.handleCategoryClick(cat.id)}}>
+                {cat.type}
+                <img className="category" src={`${cat.type}.svg`}/>
               </li>
-            ))}
+            )}
           </ul>
           <Search submitSearch={this.submitSearch}/>
         </div>
@@ -141,7 +170,7 @@ class QuestionView extends Component {
               key={q.id}
               question={q.question}
               answer={q.answer}
-              category={this.state.categories[q.category]} 
+              category={this.state.categories.filter(c => c.id === q.category)[0].type} 
               difficulty={q.difficulty}
               questionAction={this.questionAction(q.id)}
             />
