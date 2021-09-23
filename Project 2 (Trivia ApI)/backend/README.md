@@ -86,6 +86,7 @@ GET '/categories'
 GET ...'/categories/<int:category_id>/questions'
 GET ...'/questions'
 POST ...'/questions'
+POST ...'/questions'
 DELETE ...'/questions/<int:question_id>
 POST ...'/quizzes 
 
