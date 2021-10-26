@@ -32,7 +32,7 @@ def drinks():
 
 
 @app.route('/drinks-detail', methods = ['GET'])
-@requires_auth('get:drinks-detail')
+@requires_auth('get:drinks-details')
 def drink_details(payload):
     drinks = Drink.query.all()
 
@@ -54,7 +54,7 @@ def make_drink(payload):
     if required not in body or body[required]=='':
         raise unprocessable({
             'status' : "request_invalid",
-            'message' : "Title and recipe is required"
+            'message' : "Title and recipe is needed"
         })
     
     try:
@@ -63,7 +63,7 @@ def make_drink(payload):
         drink.insert()
 
         drinks = Drink.query.all()
-        if(len(drinks) < 1):
+        if(len(drinks) < 1): 
             raise not_found(404)
         
         return jsonify({
@@ -84,10 +84,10 @@ def edit_drink(payload, drink_id):
     
     body = request.get_json()
     for required in ['title', 'recipe']:
-        if required not in body or body[required]=='':
+        if required not in body or body[required] == '':
              raise unprocessable({
                 'status' : "request_invalid",
-                'message' : "{required} is required, string cannot be empty"
+                'message' : f"{required} is required, string cannot be empty"
         })
 
     try:
@@ -102,7 +102,7 @@ def edit_drink(payload, drink_id):
 
         drinks = Drink.query.all()
         if(len(drinks) < 1):
-            raise not_found(404)
+            raise not_found()
         
         return jsonify({
             'success': True,
