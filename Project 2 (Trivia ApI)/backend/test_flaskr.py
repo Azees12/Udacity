@@ -16,7 +16,7 @@ class TriviaTestCase(unittest.TestCase):
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "trivia_test"
-        self.database_path = "postgres://{}/{}".format(
+        self.database_path = "postgresql://{}/{}".format(
             "localhost:5432", self.database_name
         )
         setup_db(self.app, self.database_path)
@@ -49,7 +49,7 @@ class TriviaTestCase(unittest.TestCase):
     """
     "Test get Categories"
 
-    def test_Catergories(self):
+    def test_Categories(self):
         response = self.client().get("/categories")
         data = json.loads(response.data)
 
